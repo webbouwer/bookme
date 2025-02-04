@@ -117,7 +117,7 @@ function hasAvailableSlot($date, $events) {
 </head>
 
 <body>
-    <h1>Afspraken Aanvragen</h1>
+    <h1>Afspraak Aanvragen</h1>
     <div id="formcontainer">
         <div id="stepNavigator">
             <span class="stepNav active" data-step="1">Stap 1: Selecteer Datum</span>
@@ -132,31 +132,46 @@ function hasAvailableSlot($date, $events) {
         <div id="step2" class="step">
             <h2>Selecteer een Tijdslot</h2>
             <div id="timeslots"></div>
-            <button id="backToStep1Step2">Vorige</button>
+            <button id="backToStep1Step2">andere datum</button>
         </div>
         <div id="step3" class="step">
             <h2>Vul Uw Gegevens In</h2>
             <form id="bookingForm">
-                <label for="name">Naam:</label>
-                <input type="text" id="name" name="name" required><br>
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" required><br>
-                <label for="telephone">Telefoon:</label>
-                <input type="tel" id="telephone" name="telephone" required><br>
-                <label for="city">Stad:</label>
-                <input type="text" id="city" name="city" required><br>
-                <label for="size">Grootte:</label>
-                <input type="text" id="size" name="size" required><br>
-                <label for="info">Aanvullende Informatie:</label>
-                <textarea id="info" name="info"></textarea><br>
-                <button type="button" id="backToStep2">Vorige</button>
-                <button type="button" id="toStep4">Volgende</button>
+
+                <div class="datafield">
+                    <label for="name">Naam:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="datafield">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="datafield">
+                    <label for="telephone">Telefoon:</label>
+                    <input type="tel" id="telephone" name="telephone" required>
+                </div>
+                <div class="datafield">
+                    <label for="city">Stad:</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="datafield">
+                    <label for="size">Grootte:</label>
+                    <input type="text" id="size" name="size" required>
+                </div>
+                <div class="datafield">
+                    <label for="info">Aanvullende Informatie:</label>
+                    <textarea id="info" name="info"></textarea>
+                </div>
+                <div class="datafield">
+                    <button type="button" id="backToStep2">ander moment</button>
+                    <button type="button" id="toStep4">aanvraag controleren</button>
+                </div>
             </form>
         </div>
         <div id="step4" class="step">
             <h2>Controleer Uw Aanvraag</h2>
             <div id="review"></div>
-            <button id="backToStep3">Vorige</button>
+            <button id="backToStep3">aanpassen</button>
             <button id="submitBooking">Verzenden</button>
         </div>
         <div id="step5" class="step">
@@ -182,9 +197,14 @@ function hasAvailableSlot($date, $events) {
                 displayEventEnd: true,
                 events: events,
                 headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,listWeek'
+                    left: 'title',
+                    center: '',
+                    right: 'today'
+                },
+                footerToolbar: {
+                    left: 'dayGridMonth,listWeek',
+                    center: '',
+                    right: 'prev,next'
                 },
                 dateClick: function(info) {
                     if (hasAvailableSlot(info.dateStr)) {
@@ -228,6 +248,35 @@ function hasAvailableSlot($date, $events) {
                 calendar.changeView('listWeek');
             }
 
+            // Check if there are clickable days or timeslots in the current view
+            function hasClickableDaysOrSlots() {
+                var view = calendar.view;
+                var hasClickable = false;
+                var currentDate = view.activeStart;
+                while (currentDate < view.activeEnd) {
+                    if (hasAvailableSlot(currentDate.toISOString().split('T')[0])) {
+                        hasClickable = true;
+                        break;
+                    }
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+                return hasClickable;
+            }
+
+            function checkAndMoveToNext() {
+                if (!hasClickableDaysOrSlots()) {
+                    calendar.next();
+                    setTimeout(checkAndMoveToNext, 500); // Check again after moving to the next period
+                }
+            }
+
+            checkAndMoveToNext(); // Initial check and move if necessary
+
+            // Check and move to next if no clickable events on window resize
+            $(window).resize(function() {
+                checkAndMoveToNext();
+            });
+
             function loadTimeSlots(date) {
                 $('#timeslots').empty();
                 var dutchDate = new Date(date).toLocaleDateString('nl-NL', {
@@ -236,7 +285,7 @@ function hasAvailableSlot($date, $events) {
                     month: 'long',
                     day: 'numeric'
                 });
-                $('#timeslots').append('<h3>' + dutchDate + '</h3>');
+                $('#timeslots').append('<h3>' + dutchDate + '</h3><div class="timeslotbar"></div>');
                 events.forEach(function(slot) {
                     if (slot.start.startsWith(date)) {
                         var button = $('<button>')
@@ -258,7 +307,7 @@ function hasAvailableSlot($date, $events) {
                         if (selectedSlot && (selectedSlot.start.split('T')[1].substring(0, 5) === slot.start.split('T')[1].substring(0, 5))) {
                             button.addClass('selected');
                         }
-                        $('#timeslots').append(button);
+                        $('#timeslots').find('.timeslotbar').append(button);
                     }
                 });
             }
@@ -303,7 +352,7 @@ function hasAvailableSlot($date, $events) {
 
             $('#toStep4').click(function() {
                 var valid = true;
-                $('#bookingForm input[required]').each(function() {
+                $('#bookingForm input[required], #bookingForm textarea[required]').each(function() {
                     if (!this.value) {
                         $(this).addClass('error');
                         valid = false;
@@ -311,6 +360,25 @@ function hasAvailableSlot($date, $events) {
                         $(this).removeClass('error');
                     }
                 });
+
+                // Additional validation for specific fields
+                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                var telephonePattern = /^[0-9\-\+\s\(\)]+$/;
+
+                if (!emailPattern.test($('#email').val())) {
+                    $('#email').addClass('error');
+                    valid = false;
+                } else {
+                    $('#email').removeClass('error');
+                }
+
+                if (!telephonePattern.test($('#telephone').val())) {
+                    $('#telephone').addClass('error');
+                    valid = false;
+                } else {
+                    $('#telephone').removeClass('error');
+                }
+
                 if (valid) {
                     formData = $('#bookingForm').serializeArray();
                     $('#review').html(`

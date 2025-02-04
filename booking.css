@@ -1,3 +1,140 @@
+:root {
+    --primary-bg-color: #f0a1c1;
+    --primary-active-bg-color: #c40079;
+    --primary-done-bg-color: #e573a1;
+    --primary-hover-bg-color: #c40079;
+    --primary-font-color: #fff;
+    --input-border-color: #ccc;
+    --input-error-border-color: red;
+    --button-bg-color: #e573a1;
+    --button-hover-bg-color: #c40079;
+    --border-radius: 7px;
+    --font-size: 1.1em;
+}
+
+#stepNavigator{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+}
+
+
+
+.stepNav {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    background-color: var(--primary-bg-color);
+    border-radius: var(--border-radius);
+    margin: 0 4px;
+    transition: background-color 0.3s;
+}
+
+.stepNav.active {
+    background-color: var(--primary-active-bg-color);
+    color: var(--primary-font-color);
+}
+
+.stepNav.done {
+    background-color: var(--primary-done-bg-color);
+    
+    cursor: pointer;
+}
+
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+#stepNavigator,
+h1,
+#step1.active,
+#step2.active,
+#step3.active,
+#step4.active,
+#step5.active h2,
+#step5.active .slotinfo {
+    text-align: center;
+}
+
+
+.datafield
+{
+    text-align: left;
+}
+
+input, textarea {
+    width: calc(100% - 18px);
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius);
+}
+
+input.error, textarea.error {
+    border-color: var(--input-error-border-color);
+}
+
+
+
+
+button {
+    background-color: var(--button-bg-color);
+    border: none;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+button.selected {
+}
+
+
+#timeslots .timeslotbar
+{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#timeslots .timeslotbar button {
+    flex: 1;
+    margin: 0 7px 7px 0;
+}
+
+@media (max-width: 1080px) {
+    .fc-daygrid-event .fc-event-time {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+
+    #stepNavigator {
+        flex-direction: column;
+    }
+
+    .stepNav {
+        margin: 4px 0;
+        border-radius: 15px;
+        padding: 12px;
+    }
+
+}
+
+
+
+/*
+
 .fc-daygrid-day-frame:has(.fc-daygrid-event),
 button.selected {
     background-color: #b9ffee;
@@ -10,7 +147,7 @@ button.selected {
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
-    color: #333;
+    color: #333; 
 }
 
 #formcontainer {
@@ -55,6 +192,14 @@ body {
     display: block;
 }
 
+#step1.active,
+#step2.active,
+#step3.active h2,
+#step3.active .slotinfo
+{
+    text-align:center;
+}
+
 @media (max-width: 600px) {
     #stepNavigator {
         flex-direction: column;
@@ -66,18 +211,24 @@ body {
         padding: 12px;
     }
 
+    .fc-daygrid-event .fc-event-time,
+    .fc-daygrid-event .fc-event-title
+    {
+        display:none !important;
+    }
+
     .fc-toolbar-title {
-        font-size: 1.2em; /* Smaller font size for calendar header title */
+        font-size: 1.2em; 
     }
 
     .fc-button {
-        font-size: 0.8em; /* Smaller font size for calendar buttons */
-        padding: 6px 10px; /* Adjust padding for calendar buttons */
+        font-size: 0.8em; 
+        padding: 6px 10px; 
     }
 }
 
 button {
-    background-color: #00cc99;
+    background-color: #66ffcc;
     color: #fff;
     border: none;
     padding: 8px 15px;
@@ -87,17 +238,34 @@ button {
 }
 
 button:hover {
-    background-color: #009973;
+    background-color: #009973; 
 }
-
 button.selected {
-    background-color: #66ffcc;
-    color: #000;
+    background-color: #00cc99; 
 }
 
 #timeslots {
-    margin: 10px 0px;
 }
+
+#timeslots button {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0px 10px 10px 0px;
+}
+
+button#backToStep1Step2,
+button#backToStep2,
+button#backToStep3
+{
+    background-color: #b9ffee;
+    color: #000;
+    transition: background-color 0.3s;
+}
+button#toStep4
+{
+    color: #000;
+}
+
 
 input, textarea {
     width: calc(100% - 18px);
@@ -114,6 +282,10 @@ input.error, textarea.error {
 .slotinfo {
     background-color: #b9ffee;
     padding: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
     border-radius: 3px;
     margin-bottom: 8px;
 }
+
+*/
