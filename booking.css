@@ -11,15 +11,25 @@
     --border-radius: 7px;
     --font-size: 1.1em;
 }
-
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #3d3d3d; 
+}
+#bookmebox
+{
+    margin: 0 auto;
+    padding: 15px;
+    max-width: 1180px;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
 #stepNavigator{
     display: flex;
     justify-content: space-between;
     margin-bottom: 7px;
 }
-
-
-
 .stepNav {
     flex: 1;
     padding: 8px;
@@ -29,27 +39,21 @@
     margin: 0 4px;
     transition: background-color 0.3s;
 }
-
 .stepNav.active {
     background-color: var(--primary-active-bg-color);
     color: var(--primary-font-color);
 }
-
 .stepNav.done {
     background-color: var(--primary-done-bg-color);
     
     cursor: pointer;
 }
-
-
 .step {
     display: none;
 }
-
 .step.active {
     display: block;
 }
-
 #stepNavigator,
 h1,
 #step1.active,
@@ -60,13 +64,16 @@ h1,
 #step5.active .slotinfo {
     text-align: center;
 }
-
-
 .datafield
 {
     text-align: left;
+    margin:4px 0px 8px;
 }
-
+label
+{
+    padding:3px 0px;   
+    font-size:0.9em;
+}
 input, textarea {
     width: calc(100% - 18px);
     padding: 8px;
@@ -74,218 +81,70 @@ input, textarea {
     border: 1px solid var(--input-border-color);
     border-radius: var(--border-radius);
 }
-
+textarea
+{
+    min-height:60px;
+}
 input.error, textarea.error {
     border-color: var(--input-error-border-color);
 }
-
-
-
-
 button {
-    background-color: var(--button-bg-color);
+    font-size: 1.1em;
+    background-color: var(--primary-bg-color);
     border: none;
     padding: 8px 15px;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
 button:hover {
-    background-color: var(--button-hover-bg-color);
+    background-color: var(--button-bg-color);
 }
-
 button.selected {
+    background-color: var(--button-hover-bg-color);
+    color: var(--primary-font-color);
 }
-
-
+.slotinfo
+{
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0px 10px 10px 0px;
+}
 #timeslots .timeslotbar
 {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
 }
-
+#timeslots h3,
+#bookingForm .slotinfo
+{
+    text-transform:uppercase;
+}
 #timeslots .timeslotbar button {
     flex: 1;
     margin: 0 7px 7px 0;
 }
-
 @media (max-width: 1080px) {
     .fc-daygrid-event .fc-event-time {
         display: none !important;
     }
 }
-
 @media (max-width: 768px) {
-
     #stepNavigator {
         flex-direction: column;
     }
-
     .stepNav {
         margin: 4px 0;
         border-radius: 15px;
         padding: 12px;
     }
-
-}
-
-
-
-/*
-
-.fc-daygrid-day-frame:has(.fc-daygrid-event),
-button.selected {
-    background-color: #b9ffee;
-}
-
-.fc-daygrid-event
-{
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333; 
-}
-
-#formcontainer {
-    margin: 0 auto;
-    padding: 15px;
-    background-color: #fff;
-    border-radius: 6px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-
-#stepNavigator {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-.stepNav {
-    flex: 1;
-    padding: 8px;
-    text-align: center;
-    background-color: #b9ffee;
-    border-radius: 3px;
-    margin: 0 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.stepNav.active {
-    background-color: #00cc99;
-    color: #fff;
-}
-
-.stepNav.done {
-    background-color: #66ffcc;
-}
-
-.step {
-    display: none;
-}
-
-.step.active {
-    display: block;
-}
-
-#step1.active,
-#step2.active,
-#step3.active h2,
-#step3.active .slotinfo
-{
-    text-align:center;
-}
-
-@media (max-width: 600px) {
-    #stepNavigator {
-        flex-direction: column;
-    }
-
-    .stepNav {
-        margin: 4px 0;
-        border-radius: 15px;
-        padding: 12px;
-    }
-
-    .fc-daygrid-event .fc-event-time,
-    .fc-daygrid-event .fc-event-title
+    #timeslots .timeslotbar
     {
-        display:none !important;
+        display:block;
     }
-
-    .fc-toolbar-title {
-        font-size: 1.2em; 
-    }
-
-    .fc-button {
-        font-size: 0.8em; 
-        padding: 6px 10px; 
+    #timeslots .timeslotbar button
+    {
+        width:100%;
     }
 }
-
-button {
-    background-color: #66ffcc;
-    color: #fff;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #009973; 
-}
-button.selected {
-    background-color: #00cc99; 
-}
-
-#timeslots {
-}
-
-#timeslots button {
-    font-size: 1.1em;
-    font-weight: bold;
-    margin: 0px 10px 10px 0px;
-}
-
-button#backToStep1Step2,
-button#backToStep2,
-button#backToStep3
-{
-    background-color: #b9ffee;
-    color: #000;
-    transition: background-color 0.3s;
-}
-button#toStep4
-{
-    color: #000;
-}
-
-
-input, textarea {
-    width: calc(100% - 18px);
-    padding: 8px;
-    margin-bottom: 8px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-input.error, textarea.error {
-    border-color: red;
-}
-
-.slotinfo {
-    background-color: #b9ffee;
-    padding: 8px;
-    font-size: 1.1em;
-    font-weight: bold;
-    border-radius: 3px;
-    margin-bottom: 8px;
-}
-
-*/
