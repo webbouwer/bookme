@@ -8,7 +8,11 @@
 
 require 'config/config.php';
 require 'calendar.php';
+require 'language.php';
+
+loadLang('nl_NL'); 
 $bookme = new calendarAvailabillity($icsurl);
+
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -23,6 +27,9 @@ $bookme = new calendarAvailabillity($icsurl);
     <link rel="stylesheet" href="booking.css">
 </head>
 <body>
+    
+    <?php //echo Language::translate("language-selected") ?>  
+
     <div id="bookmebox">
         <h1>Afspraak Aanvragen</h1>
         <div id="formcontainer">
@@ -58,7 +65,7 @@ $bookme = new calendarAvailabillity($icsurl);
                         <input type="tel" id="telephone" name="telephone" required>
                     </div>
                     <div class="datafield">
-                        <label for="city">Plaats:</label>
+                        <label for="city">Woonplaats:</label>
                         <input type="text" id="city" name="city" required>
                     </div>
                     <div class="datafield">
@@ -84,7 +91,7 @@ $bookme = new calendarAvailabillity($icsurl);
                     </div>
                     <div class="datafield">
                         <label for="info">Aanvullende informatie:</label>
-                        <textarea id="info" name="info" placeholder="bv. dat je zwanger bent of beperkingen hebt waar wij rekening mee kunnen houden. Ook als je liever wat eerder of later zou willen komen kun je dat hier aangeven"></textarea>
+                        <textarea id="info" name="info" placeholder="Aanvullende informatie kan zijn dat je bijvoorbeeld zwanger bent of een beperking hebt  waarvan je het fijn vindt om ons op de hoogte te brengen. Ook kan het zijn dat het tijdstip dat wij standaard hanteren niet uitkomt voor je, dan proberen we dat aan te passen natuurlijk"></textarea>
                     </div>
                     <div class="datafield">
                         <button type="button" id="backToStep2">ander moment</button>

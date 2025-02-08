@@ -147,4 +147,8 @@ button.selected {
     {
         width:100%;
     }
+    textarea
+    {
+        min-height:90px;
+    }
 }
