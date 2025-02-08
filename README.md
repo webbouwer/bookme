@@ -2,8 +2,8 @@
 
 Booking calendar - an appointment request app build with html, css, javacript, js fullcalendar library and php
 
-## ICS soruce
-The calendar requires an .ics source link for calculating booking options (realtime)
+## ICS source link
+The calendar requires an .ics source link for calculating realtime booking options (on page load)
  
 ### Configuration
 Create a folder 'config' and add following variables:
