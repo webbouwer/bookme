@@ -1,4 +1,5 @@
 <?php
+
     // use phpmailer
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\Exception;
@@ -6,7 +7,10 @@
     require 'lib/PHPMailer/src/Exception.php';
     require 'lib/PHPMailer/src/PHPMailer.php';
     require 'lib/PHPMailer/src/SMTP.php';
+
     require 'config/config.php';
+    require 'language.php';
+    loadLang(isset($_POST['lang']) ? $_POST['lang'] : 'nl_NL');
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get the form data and validate
@@ -19,21 +23,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $info = filter_input(INPUT_POST, 'info', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $slot = filter_input(INPUT_POST, 'slot', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
-
-
-
-
+    $fmtDate = new IntlDateFormatter($_POST['lang'] == 'en_EN' ? 'en_GB' : 'nl_NL', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+    $fmtTime = new IntlDateFormatter($_POST['lang'] == 'en_EN' ? 'en_GB' : 'nl_NL', IntlDateFormatter::NONE, IntlDateFormatter::SHORT);
+    $subject = Language::translate("email-subject");
     // variable email data 1
-    $headercontent = "Nieuwe afspraak aanvraag";
+    $headercontent = Language::translate("new-booking-request");
     $footercontent = "Bookme - Uit-liefde";
-
-    // see config
-    //$to = "support@webdesigndenhaag.net"; // Replace with your email address
-    //$toname = 'Webbouwer Test Server';
-    //$subject = "Nieuwe Afspraak Aanvraag";
-
-    $fmtDate = new IntlDateFormatter('nl_NL', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
-    $fmtTime = new IntlDateFormatter('nl_NL', IntlDateFormatter::NONE, IntlDateFormatter::SHORT);
     $body = "
     <html>
     <head>
@@ -53,15 +48,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h1>$headercontent</h1>
             </div>
             <div class='content'>
-                <p><strong>Datum:</strong> " . $fmtDate->format(new DateTime($slot['start'])) . "</p>
-                <p><strong>Tijdslot:</strong> " . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . " </p>
-                <p><strong>Naam:</strong> $name</p>
-                <p><strong>E-mail:</strong> $email</p>
-                <p><strong>Telefoon:</strong> $telephone</p>
-                <p><strong>Plaats:</strong> $city</p>
-                <p><strong>Kledingmaat:</strong> $size</p>
-                <p><strong>Aantal bezoekers:</strong> $aantal</p>
-                <p><strong>Aanvullende Info:</strong> $info</p>
+                <p><strong>" . Language::translate("date") . ":</strong> " . $fmtDate->format(new DateTime($slot['start'])) . "</p>
+                <p><strong>" . Language::translate("time-slot") . ":</strong> " . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . " </p>
+                <p><strong>" . Language::translate("name") . ":</strong> $name</p>
+                <p><strong>" . Language::translate("email") . ":</strong> $email</p>
+                <p><strong>" . Language::translate("telephone") . ":</strong> $telephone</p>
+                <p><strong>" . Language::translate("city") . ":</strong> $city</p>
+                <p><strong>" . Language::translate("size") . ":</strong> $size</p>
+                <p><strong>" . Language::translate("visitors") . ":</strong> $aantal</p>
+                <p><strong>" . Language::translate("additional-info") . ":</strong> $info</p>
             </div>
             <div class='footer'>
                 <p>$footercontent</p>
@@ -69,11 +64,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </body>
     </html>";
-    $altbody = "Naam: $name\nE-mail: $email\nTelefoon: $telephone\nStad: $city\nGrootte: $size\nAantal bezoekers: $aantal\nAanvullende Info: $info\nDatum: $date\nTijdslot: " . $fmtDate->format(new DateTime($slot['start'])) . " (" . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . ")";
-    
+    $altbody = Language::translate("name") . ": $name\n" . Language::translate("email") . ": $email\n" . Language::translate("telephone") . ": $telephone\n" . Language::translate("city") . ": $city\n" . Language::translate("size") . ": $size\n" . Language::translate("visitors") . ": $aantal\n" . Language::translate("additional-info") . ": $info\n" . Language::translate("date") . ": $date\n" . Language::translate("time-slot") . ": " . $fmtDate->format(new DateTime($slot['start'])) . " (" . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . ")";
+
     // guest = sender
     $send_from_address= $email; 
     $send_from_name = $name;
+
     // booking manager = receiver
     $send_to_address = $to;
     $send_to_name = $toname;
@@ -108,20 +104,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo json_encode(["status" => "error", "message" => "E-mail verzenden mislukt..."]); // $mail->ErrorInfo;
         exit();
     } 
-
-
-
-
     // variable email data 2
-    $headercontent = "Nieuwe afspraak aanvraag in behandeling";
+    $headercontent = Language::translate("booking-in-progress");
     $footercontent = "Bookme - Uit-liefde";
-
     $from = $to; // see config
     $fromname = $toname; // see config
     // $subject = "Nieuwe afspraak aanvraag"; // see config
-
-    $fmtDate = new IntlDateFormatter('nl_NL', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
-    $fmtTime = new IntlDateFormatter('nl_NL', IntlDateFormatter::NONE, IntlDateFormatter::SHORT);
     $body = "
     <html>
     <head>
@@ -141,18 +129,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h1>$headercontent</h1>
             </div>
             <div class='content'>
-                <p>Beste $name</p>
-                <p>Wat leuk dat je jouw trouwjurk bij ons hoopt te vinden, daar gaan we ons best voor doen.</p>
-                <p>We mailen je binnen 24 uur of op de door jou aangevraagde datum en tijdstip een vrijwilligster beschikbaar is.</p>
-                <p><strong>Datum:</strong> " . $fmtDate->format(new DateTime($slot['start'])) . "</p>
-                <p><strong>Tijdslot:</strong> " . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . " </p>
-                <p><strong>Naam:</strong> $name</p>
-                <p><strong>E-mail:</strong> $email</p>
-                <p><strong>Telefoon:</strong> $telephone</p>
-                <p><strong>Plaats:</strong> $city</p>
-                <p><strong>Kledingmaat:</strong> $size</p>
-                <p><strong>Aantal bezoekers:</strong> $aantal</p>
-                <p><strong>Aanvullende Info:</strong> $info</p>
+                <p>" . Language::translate("greeting") . " $name,</p>
+                <p>" . Language::translate("booking-details") . "</p>
+                <p><strong>" . Language::translate("date") . ":</strong> " . $fmtDate->format(new DateTime($slot['start'])) . "</p>
+                <p><strong>" . Language::translate("time-slot") . ":</strong> " . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . " </p>
+                <p><strong>" . Language::translate("name") . ":</strong> $name</p>
+                <p><strong>" . Language::translate("email") . ":</strong> $email</p>
+                <p><strong>" . Language::translate("telephone") . ":</strong> $telephone</p>
+                <p><strong>" . Language::translate("city") . ":</strong> $city</p>
+                <p><strong>" . Language::translate("size") . ":</strong> $size</p>
+                <p><strong>" . Language::translate("visitors") . ":</strong> $aantal</p>
+                <p><strong>" . Language::translate("additional-info") . ":</strong> $info</p>
             </div>
             <div class='footer'>
                 <p>$footercontent</p>
@@ -160,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </body>
     </html>";
-    $altbody = "Naam: $name\nE-mail: $email\nTelefoon: $telephone\nStad: $city\nGrootte: $size\nAantal bezoekers: $aantal\nAanvullende Info: $info\nDatum: $date\nTijdslot: " . $fmtDate->format(new DateTime($slot['start'])) . " (" . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . ")";
+    $altbody = Language::translate("greeting") . " $name,\n" . Language::translate("booking-details") . "\n" . Language::translate("date") . ": " . $fmtDate->format(new DateTime($slot['start'])) . "\n" . Language::translate("time-slot") . ": " . $fmtTime->format(new DateTime($slot['start'])) . " - " . $fmtTime->format(new DateTime($slot['end'])) . "\n" . Language::translate("name") . ": $name\n" . Language::translate("email") . ": $email\n" . Language::translate("telephone") . ": $telephone\n" . Language::translate("city") . ": $city\n" . Language::translate("size") . ": $size\n" . Language::translate("visitors") . ": $aantal\n" . Language::translate("additional-info") . ": $info\n";
     
     // guest = receiver
     $send_from_address= $from; 
@@ -198,14 +185,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(!$mail->send()){
         echo json_encode(["status" => "error", "message" => "E-mail verzenden mislukt..."]); // $mail->ErrorInfo;
     } else {
+
         echo json_encode(["status" => "success", "message" => "E-mails succesvol verzonden naar $to en $email..."]);
         
     }
     
-    
+
 } else {
     echo json_encode(["status" => "error", "message" => "Ongeldige aanvraagmethode."]);
 }
 
+
+
+
+/* plain php mail (not save/deprecated ) 
+    if ($name && $email && $telephone && $city && $size && $info && $date && $slot) {
+
+        
+        // Email details
+        $to = "support@webdesigndenhaag.net"; // Replace with your email address
+        $subject = "Nieuwe Afspraak Aanvraag";
+        $body = "Naam: $name\nE-mail: $email\nTelefoon: $telephone\nStad: $city\nGrootte: $size\nAanvullende Info: $info\nDatum: $date\nTijdslot: " . $slot['title'] . " (" . $slot['start'] . " - " . $slot['end'] . ")";
+        $headers = "From: $to\r\nReply-To: $email";
+
+        // Send the email to the support email
+        $mail_sent = mail($to, $subject, $body, $headers);
+
+        // Send a confirmation email to the user
+        $user_subject = "Bevestiging van uw afspraak aanvraag";
+        $user_body = "Beste $name,\n\nBedankt voor uw afspraak aanvraag. Hier zijn de details van uw aanvraag:\n\n$body\n\nMet vriendelijke groet,\nWebdesign Den Haag";
+        $user_headers = "From: $to\r\nReply-To: $to";
+
+        $user_mail_sent = mail($email, $user_subject, $user_body, $user_headers);
+
+        if ($mail_sent && $user_mail_sent) {
+            // Send a JSON response
+            echo json_encode(["status" => "success", "message" => "E-mails succesvol verzonden naar $to en $email..."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "E-mail verzenden mislukt..."]);
+        }
+    } else {
+        echo json_encode(["status" => "error", "message" => "Ongeldige formuliergegevens."]);
+    }
+} else {
+    echo json_encode(["status" => "error", "message" => "Ongeldige aanvraagmethode."]);
+}
+
+*/
 
 ?>

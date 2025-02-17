@@ -5,71 +5,83 @@
  * Users can select a date and time slot, enter their details, review the booking, and submit the form.
  * The form data is sent via AJAX to a PHP script that sends an email with the booking details.
  */
-
 require 'config/config.php';
 require 'calendar.php';
 require 'language.php';
-
-loadLang('nl_NL'); 
+loadLang(isset($_GET['lang']) ? $_GET['lang'] : 'nl_NL'); 
 $bookme = new calendarAvailabillity($icsurl);
-
 ?>
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?php echo $_GET['lang'] == 'en_EN' ? 'en' : 'nl'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Afspraken Aanvragen</title>
+
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
+
     <link rel="stylesheet" href="booking.css">
+
 </head>
+
 <body>
-    
-    <?php //echo Language::translate("language-selected") ?>  
 
     <div id="bookmebox">
-        <h1>Afspraak Aanvragen</h1>
-        <div id="formcontainer">
-            <div id="stepNavigator">
-                <span class="stepNav active" data-step="1">Stap 1: Datum & tijd</span>
-                <span class="stepNav" data-step="2">Stap 2: Tijdslot</span>
-                <span class="stepNav" data-step="3">Stap 3: Gegevens</span>
-                <span class="stepNav" data-step="4">Stap 4: Controleer</span>
-                <span class="stepNav" data-step="5">Stap 5: Bevestiging</span>
-            </div>
-            <div id="step1" class="step active">
-                <div id="bookingcalendar"></div>
-            </div>
-            <div id="step2" class="step">
-                <h2>Selecteer een Tijdslot</h2>
-                <div id="timeslots"></div>
-                <button id="backToStep1Step2">andere datum</button>
-            </div>
-            <div id="step3" class="step">
-                <h2>Vul jou gegevens in</h2>
-                <p style="font-size:0.8em;">Ingevulde gegevens worden alleen via email verstuurd en alleen gebruikt voor contact met jou en voor de voorbereiding van de afspraak.</p>
-                <form id="bookingForm">
+
+        <div id="language-selector">
+            <form method="GET" action="">
+                <label for="language"><?php echo Language::translate("language-name"); ?>:</label>
+                <select name="lang" id="language" onchange="this.form.submit()">
+                    <option class="nl_NL" value="nl_NL" <?php echo $_GET['lang'] == 'nl_NL' ? 'selected' : ''; ?>>Nederlands</option>
+                    <option class="en_EN" value="en_EN" <?php echo $_GET['lang'] == 'en_EN' ? 'selected' : ''; ?>>English</option> 
+                </select>
+            </form>
+        </div> 
+
+        <h1><?php echo Language::translate("booking-request"); ?></h1>
+
+    <div id="formcontainer">
+        <div id="stepNavigator">
+                <span class="stepNav active" data-step="1"><?php echo Language::translate("step1"); ?></span>
+                <span class="stepNav" data-step="2"><?php echo Language::translate("step2"); ?></span>
+                <span class="stepNav" data-step="3"><?php echo Language::translate("step3"); ?></span>
+                <span class="stepNav" data-step="4"><?php echo Language::translate("step4"); ?></span>
+                <span class="stepNav" data-step="5"><?php echo Language::translate("step5"); ?></span>
+        </div>
+        <div id="step1" class="step active">
+            <div id="bookingcalendar"></div>
+        </div>
+        <div id="step2" class="step">
+                <h2><?php echo Language::translate("time-slot"); ?></h2>
+            <div id="timeslots"></div>
+                <button id="backToStep1Step2"><?php echo Language::translate("other-date"); ?></button>
+        </div>
+        <div id="step3" class="step">
+                <h2><?php echo Language::translate("additional-info"); ?></h2>
+                <p style="font-size:0.8em;"><?php echo Language::translate("info-note"); ?></p>
+            <form id="bookingForm">
                     <div class="datafield">
-                        <label for="name">Naam:</label>
+                        <label for="name"><?php echo Language::translate("name"); ?>:</label>
                         <input type="text" id="name" name="name" required>
                     </div>
                     <div class="datafield">
-                        <label for="email">E-mail:</label>
+                        <label for="email"><?php echo Language::translate("email"); ?>:</label>
                         <input type="email" id="email" name="email" required>
                     </div>
                     <div class="datafield">
-                        <label for="telephone">Telefoon:</label>
+                        <label for="telephone"><?php echo Language::translate("telephone"); ?>:</label>
                         <input type="tel" id="telephone" name="telephone" required>
                     </div>
                     <div class="datafield">
-                        <label for="city">Woonplaats:</label>
+                        <label for="city"><?php echo Language::translate("city"); ?>:</label>
                         <input type="text" id="city" name="city" required>
                     </div>
                     <div class="datafield">
-                        <label for="size">Kledingmaat:</label>
+                        <label for="size"><?php echo Language::translate("size"); ?>:</label>
                         <select id="size" name="size" required>
                             <option value="32">32</option>
                             <option value="34">34</option>
@@ -77,11 +89,11 @@ $bookme = new calendarAvailabillity($icsurl);
                             <option value="38" selected>38</option>
                             <option value="40">40</option>
                             <option value="42">42</option>
-                            <option value="plussize">plussize</option>
+                            <option value="plussize"><?php echo Language::translate("plussize"); ?></option>
                         </select>
                     </div>
                     <div class="datafield">
-                        <label for="bezoekers">Hoeveel mensen neem je mee?</label> 
+                        <label for="bezoekers"><?php echo Language::translate("visitors"); ?></label> 
                         <select id="bezoekers" name="bezoekers" required>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -90,29 +102,30 @@ $bookme = new calendarAvailabillity($icsurl);
                         </select>
                     </div>
                     <div class="datafield">
-                        <label for="info">Aanvullende informatie:</label>
-                        <textarea id="info" name="info" placeholder="Aanvullende informatie kan zijn dat je bijvoorbeeld zwanger bent of een beperking hebt  waarvan je het fijn vindt om ons op de hoogte te brengen. Ook kan het zijn dat het tijdstip dat wij standaard hanteren niet uitkomt voor je, dan proberen we dat aan te passen natuurlijk"></textarea>
+                        <label for="info"><?php echo Language::translate("additional-info"); ?>:</label>
+                        <textarea id="info" name="info" placeholder="<?php echo Language::translate("info-placeholder"); ?>"></textarea>
                     </div>
                     <div class="datafield">
-                        <button type="button" id="backToStep2">ander moment</button>
-                        <button type="button" id="toStep4">aanvraag controleren</button> 
+                        <button type="button" id="backToStep2"><?php echo Language::translate("other-time"); ?></button>
+                        <button type="button" id="toStep4"><?php echo Language::translate("review-request"); ?></button> 
                     </div>
                     
-                </form>
-            </div>
-            <div id="step4" class="step">
-                <h2>Controleer de aanvraag</h2>
-                <div id="review"></div>
-                <button id="backToStep3">aanpassen</button>
-                <button id="submitBooking">Verzenden</button>
-            </div>
-            <div id="step5" class="step">
-                <h2>Bedankt voor de aanvraag!</h2>
-                <p id="confirmation">De aanvraag is ontvangen, wij nemen spoedig contact op.</p>
-                <!-- <button id="backToStep1">Boek een ander tijdslot</button> --> 
+            </form>
+        </div>
+        <div id="step4" class="step">
+                <h2><?php echo Language::translate("step4"); ?></h2>
+            <div id="review"></div>
+                <button id="backToStep3"><?php echo Language::translate("edit"); ?></button>
+                <button id="submitBooking"><?php echo Language::translate("submit"); ?></button>
+        </div>
+        <div id="step5" class="step">
+                <h2><?php echo Language::translate("thank-you"); ?></h2>
+                <p id="confirmation"><?php echo Language::translate("confirmation"); ?></p>
+                <button id="backToStep1"><?php echo Language::translate("start-over"); ?></button>
             </div>
         </div>
     </div>
+
     <script>
         jQuery(document).ready(function($) {
             var calendarEl = document.getElementById('bookingcalendar');
@@ -121,7 +134,7 @@ $bookme = new calendarAvailabillity($icsurl);
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 timeZone: 'UTC',
                 initialView: 'dayGridMonth',
-                locale: 'nl',
+                locale: '<?php echo $_GET['lang'] == 'en_EN' ? 'en' : 'nl'; ?>',
                 height: 'auto',
                 allDaySlot: false,
                 displayEventTime: true,
@@ -173,6 +186,7 @@ $bookme = new calendarAvailabillity($icsurl);
                 }
             });
             calendar.render();
+
             // Initial view check for responsive display
             if (window.innerWidth < 768) {
                 calendar.changeView('listWeek');
@@ -204,13 +218,14 @@ $bookme = new calendarAvailabillity($icsurl);
             });
             function loadTimeSlots(date) {
                 $('#timeslots').empty();
-                var dutchDate = new Date(date).toLocaleDateString('nl-NL', {
+                var locale = '<?php echo $_GET['lang'] == 'en_EN' ? 'en-GB' : 'nl-NL'; ?>';
+                var formattedDate = new Date(date).toLocaleDateString(locale, {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
-                $('#timeslots').append('<h3>' + dutchDate + '</h3><div class="timeslotbar"></div>');
+                $('#timeslots').append('<h3>' + formattedDate + '</h3><div class="timeslotbar"></div>');
                 events.forEach(function(slot) {
                     if (slot.start.startsWith(date)) {
                         var button = $('<button>')
@@ -218,14 +233,16 @@ $bookme = new calendarAvailabillity($icsurl);
                             .data('slot', slot)
                             .click(function() {
                                 selectedSlot = $(this).data('slot');
+
                                 $('#bookingForm .slotinfo').remove();
-                                $('#bookingForm').prepend('<div class="slotinfo">' + dutchDate + ' - ' + selectedSlot.title + ' (' + selectedSlot.start.split('T')[1].substring(0, 5) + ' - ' + selectedSlot.end.split('T')[1].substring(0, 5) + ')</div>');
+                                $('#bookingForm').prepend('<div class="slotinfo">' + formattedDate + ' - ' + selectedSlot.title + ' (' + selectedSlot.start.split('T')[1].substring(0, 5) + ' - ' + selectedSlot.end.split('T')[1].substring(0, 5) + ')</div>');
                                 $('#timeslots button').removeClass('selected');
                                 $(this).addClass('selected');
                                 $('#step2').removeClass('active');
                                 $('#step3').addClass('active');
                                 updateStepNavigator(3);
                             });
+
                         if (selectedSlot && (selectedSlot.start.split('T')[1].substring(0, 5) === slot.start.split('T')[1].substring(0, 5))) {
                             button.addClass('selected');
                         }
@@ -233,11 +250,13 @@ $bookme = new calendarAvailabillity($icsurl);
                     }
                 });
             }
+
             function hasAvailableSlot(date) {
                 return events.some(function(event) {
                     return event.start.startsWith(date);
                 });
             }
+
             function updateStepNavigator(step) {
                 $('.stepNav').removeClass('done active');
                 $('.stepNav').each(function(index) {
@@ -248,6 +267,7 @@ $bookme = new calendarAvailabillity($icsurl);
                     }
                 });
             }
+
             $('.stepNav').click(function() {
                 var step = $(this).data('step');
                 if ($(this).hasClass('done') || $(this).hasClass('active')) {
@@ -256,16 +276,19 @@ $bookme = new calendarAvailabillity($icsurl);
                     updateStepNavigator(step);
                 }
             });
+
             $('#backToStep1Step2').click(function() {
                 $('#step2').removeClass('active');
                 $('#step1').addClass('active');
                 updateStepNavigator(1);
             });
+
             $('#backToStep2').click(function() {
                 $('#step3').removeClass('active');
                 $('#step2').addClass('active');
                 updateStepNavigator(2);
             });
+
             $('#toStep4').click(function() {
                 var valid = true;
                 $('#bookingForm input[required], #bookingForm textarea[required]').each(function() {
@@ -298,26 +321,28 @@ $bookme = new calendarAvailabillity($icsurl);
                          infotext = 'n.v.t.';
                     }
                     $('#review').html(`
-                        <p>Datum: ${selectedDate}</p>
-                        <p>Tijdslot: ${selectedSlot.title} (${selectedSlot.start.split('T')[1].substring(0, 5)} - ${selectedSlot.end.split('T')[1].substring(0, 5)})</p>
-                        <p>Naam: ${formData.find(field => field.name === 'name').value}</p>
-                        <p>E-mail: ${formData.find(field => field.name === 'email').value}</p>
-                        <p>Telefoon: ${formData.find(field => field.name === 'telephone').value}</p>
-                        <p>Plaats: ${formData.find(field => field.name === 'city').value}</p>
-                        <p>Kledingmaat: ${formData.find(field => field.name === 'size').value}</p>
-                        <p>Aantal bezoekers: ${formData.find(field => field.name === 'bezoekers').value}</p>
-                        <p>Aanvullende Informatie: ${infotext}</p>
+                        <p><?php echo Language::translate("date"); ?>: ${selectedDate}</p>
+                        <p><?php echo Language::translate("time-slot"); ?>: ${selectedSlot.title} (${selectedSlot.start.split('T')[1].substring(0, 5)} - ${selectedSlot.end.split('T')[1].substring(0, 5)})</p>
+                        <p><?php echo Language::translate("name"); ?>: ${formData.find(field => field.name === 'name').value}</p>
+                        <p><?php echo Language::translate("email"); ?>: ${formData.find(field => field.name === 'email').value}</p>
+                        <p><?php echo Language::translate("telephone"); ?>: ${formData.find(field => field.name === 'telephone').value}</p>
+                        <p><?php echo Language::translate("city"); ?>: ${formData.find(field => field.name === 'city').value}</p>
+                        <p><?php echo Language::translate("size"); ?>: ${formData.find(field => field.name === 'size').value}</p>
+                        <p><?php echo Language::translate("visitors"); ?>: ${formData.find(field => field.name === 'bezoekers').value}</p>
+                        <p><?php echo Language::translate("additional-info"); ?>: ${infotext}</p>
                     `);
                     $('#step3').removeClass('active');
                     $('#step4').addClass('active');
                     updateStepNavigator(4);
                 }
             });
+
             $('#backToStep3').click(function() {
                 $('#step4').removeClass('active');
                 $('#step3').addClass('active');
                 updateStepNavigator(3);
             });
+
             $('#submitBooking').click(function() {
                 $.post('send_email.php', {
                     name: formData.find(field => field.name === 'name').value,
@@ -332,21 +357,29 @@ $bookme = new calendarAvailabillity($icsurl);
                         title: selectedSlot.title,
                         start: selectedSlot.start,
                         end: selectedSlot.end
-                    }
+                    },
+                    lang: '<?php echo $_GET['lang']; ?>'
                 }, function(response) {
                     $('#confirmation').html(`
-                        <p>Naam: ${formData.find(field => field.name === 'name').value}</p>
-                        <p>E-mail: ${formData.find(field => field.name === 'email').value}</p>
-                        <p>Telefoon: ${formData.find(field => field.name === 'telephone').value}</p>
-                        <p>Datum: ${selectedDate}</p>
-                        <p>Tijdslot: ${selectedSlot.title} (${selectedSlot.start.split('T')[1].substring(0, 5)} - ${selectedSlot.end.split('T')[1].substring(0, 5)})</p>
-                        <p>Aantal bezoekers: ${formData.find(field => field.name === 'bezoekers').value}</p>
+                        <p><?php echo Language::translate("name"); ?>: ${formData.find(field => field.name === 'name').value}</p>
+                        <p><?php echo Language::translate("email"); ?>: ${formData.find(field => field.name === 'email').value}</p>
+                        <p><?php echo Language::translate("telephone"); ?>: ${formData.find(field => field.name === 'telephone').value}</p>
+                        <p><?php echo Language::translate("date"); ?>: ${selectedDate}</p>
+                        <p><?php echo Language::translate("time-slot"); ?>: ${selectedSlot.title} (${selectedSlot.start.split('T')[1].substring(0, 5)} - ${selectedSlot.end.split('T')[1].substring(0, 5)})</p>
+                        <p><?php echo Language::translate("visitors"); ?>: ${formData.find(field => field.name === 'bezoekers').value}</p>
                     `);
                     $('#step4').removeClass('active');
                     $('#step5').addClass('active');
                     updateStepNavigator(5);
+                    // Clear form data and reset steps
+                    $('#bookingForm')[0].reset();
+                    $('#review').empty();
+                    selectedDate = null;
+                    selectedSlot = null;
+                    formData = null;
                 });
             });
+
             $('#backToStep1').click(function() {
                 $('#step5').removeClass('active');
                 $('#step1').addClass('active');
@@ -355,4 +388,5 @@ $bookme = new calendarAvailabillity($icsurl);
         });
     </script>
 </body>
+
 </html>

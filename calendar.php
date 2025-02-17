@@ -1,24 +1,16 @@
 <?php
-
 class calendarAvailabillity {
-
     public $icsurl;
     public $events;
     public $slots;
-
     public function __construct($icsurl){
-
         $this->icsurl = $icsurl;
-
     }
-
     public function importICS(){
-
         if (empty($this->icsurl)) {
             return 'No ICS URL provided.';
         }
         $ics_content = @file_get_contents($this->icsurl);
-
         if ($ics_content === false) {
             return 'Unable to fetch ICS file. Please check the URL and try again.';
         }
@@ -40,7 +32,6 @@ class calendarAvailabillity {
         }
         return $events;
     }
-
     public function hasAvailableSlot($date, $events) {
         foreach ($events as $event) {
             if (strpos($event['start'], $date) === 0) {
@@ -49,11 +40,8 @@ class calendarAvailabillity {
         }
         return false; 
     }
-
     public function arrangeTiming(){
-
         $this->events = $this->importICS();
-
         $events_array = array();
         if($this->events) {
             foreach ($this->events as $event) {
@@ -104,8 +92,8 @@ class calendarAvailabillity {
                 // Add available slots to array
                 if ($slot1_available) {
                     $available_slots[] = array(
-                        'title' => 'Ochtend',
-                        'description' => 'Ochtend',
+                        'title' => Language::translate('morning'),
+                        'description' => Language::translate('morning'),
                         'start' => date('c', strtotime($slot1_start)),
                         'className'=> 'available',
                         'end' => date('c', strtotime($slot1_end)),
@@ -113,8 +101,8 @@ class calendarAvailabillity {
                 }
                 if ($slot2_available) {
                     $available_slots[] = array(
-                        'title' => 'Middag',
-                        'description' => 'Middag',
+                        'title' => Language::translate('afternoon'),
+                        'description' => Language::translate('afternoon'),
                         'start' => date('c', strtotime($slot2_start)),
                         'className'=> 'available',
                         'end' => date('c', strtotime($slot2_end)),
@@ -126,17 +114,12 @@ class calendarAvailabillity {
         
         $this->slots = $available_slots;
         
-
     }
-
     public function getSlots(){
-
         if(empty($this->slots)){
             $this->arrangeTiming();
         }
         echo json_encode($this->slots);
         return;
-
     }
-
 }
