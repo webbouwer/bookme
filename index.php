@@ -12,7 +12,7 @@ loadLang(isset($_GET['lang']) ? $_GET['lang'] : 'nl_NL');
 $bookme = new calendarAvailabillity($icsurl);
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $_GET['lang'] == 'en_EN' ? 'en' : 'nl'; ?>">
+<html lang="<?php echo $_GET['lang'] == 'en_EN' ? 'en_EN' : 'nl_NL'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -139,6 +139,7 @@ $bookme = new calendarAvailabillity($icsurl);
                 allDaySlot: false,
                 displayEventTime: true,
                 displayEventEnd: true,
+                firstDay: 1,
                 events: events,
                 headerToolbar: {
                     left: 'title',
