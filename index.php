@@ -12,7 +12,7 @@ loadLang(isset($_GET['lang']) ? $_GET['lang'] : 'nl_NL');
 $bookme = new calendarAvailabillity($icsurl);
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $_GET['lang'] == 'en_EN' ? 'en_EN' : 'nl_NL'; ?>">
+<html lang="<?php echo isset($_GET['lang']) && $_GET['lang'] == 'en_EN' ? 'en_EN' : 'nl_NL'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -359,7 +359,7 @@ $bookme = new calendarAvailabillity($icsurl);
                         start: selectedSlot.start,
                         end: selectedSlot.end
                     },
-                    lang: '<?php echo $_GET['lang']; ?>'
+                    lang: '<?php echo isset($_GET['lang']) ? $_GET['lang'] : 'nl_NL'; ?>'
                 }, function(response) {
                     $('#confirmation').html(`
                         <p><?php echo Language::translate("name"); ?>: ${formData.find(field => field.name === 'name').value}</p>

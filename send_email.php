@@ -1,16 +1,20 @@
 <?php
 
-    // use phpmailer
-    use PHPMailer\PHPMailer\PHPMailer;
-    use PHPMailer\PHPMailer\Exception;
-    
-    require 'lib/PHPMailer/src/Exception.php';
-    require 'lib/PHPMailer/src/PHPMailer.php';
-    require 'lib/PHPMailer/src/SMTP.php';
+// use phpmailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-    require 'config/config.php';
-    require 'language.php';
-    loadLang(isset($_POST['lang']) ? $_POST['lang'] : 'nl_NL');
+require 'lib/PHPMailer/src/Exception.php';
+require 'lib/PHPMailer/src/PHPMailer.php';
+require 'lib/PHPMailer/src/SMTP.php';
+
+require 'config/config.php';
+require 'language.php';
+
+// Ensure default language is nl_NL if not provided
+$lang = isset($_POST['lang']) ? $_POST['lang'] : 'nl_NL';
+loadLang($lang);
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get the form data and validate
@@ -23,8 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $info = filter_input(INPUT_POST, 'info', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $slot = filter_input(INPUT_POST, 'slot', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
-    $fmtDate = new IntlDateFormatter($_POST['lang'] == 'en_EN' ? 'en_GB' : 'nl_NL', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
-    $fmtTime = new IntlDateFormatter($_POST['lang'] == 'en_EN' ? 'en_GB' : 'nl_NL', IntlDateFormatter::NONE, IntlDateFormatter::SHORT);
+    $fmtDate = new IntlDateFormatter($lang == 'en_EN' ? 'en_GB' : 'nl_NL', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+    $fmtTime = new IntlDateFormatter($lang == 'en_EN' ? 'en_GB' : 'nl_NL', IntlDateFormatter::NONE, IntlDateFormatter::SHORT);
     $subject = Language::translate("email-subject");
     // variable email data 1
     $headercontent = Language::translate("new-booking-request");
@@ -76,30 +80,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $mail = new PHPMailer(true);
     
-        // Server settings
-        $mail->SMTPDebug = 2;                      // Enable verbose debug output
-        $mail->isSMTP();                                            // Send using SMTP
-        $mail->Host       = $smtp_server;                    // Set the SMTP server to send through
-        $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-        $mail->Username   = $smtp_username;                     // SMTP username
-        $mail->Password   = $smtp_password;                               // SMTP password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  //'tls';       // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
-        $mail->Port       = $smtp_port;         // 587;                           // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
-        // Recipients
-        $mail->setFrom($send_from_address, $send_from_name);
-        $mail->addAddress($send_to_address, $send_to_name);     // Add a recipient
-        //$mail->addAddress('ellen@example.com');               // Name is optional
-        //$mail->addReplyTo('support@webdesigndenhaag.net', 'Information');
-        //$mail->addCC('cc@example.com');
-        //$mail->addBCC('bcc@example.com');
-    
-        // Content
-        $mail->isHTML(true);            // Set email format to HTML
-        $mail->Subject = $subject;      //'Here is the subject';
-        $mail->Body    = $body;         //'This is the HTML message body <b>in bold!</b>';
-        $mail->AltBody = $altbody; //'This is the body in plain text for non-HTML mail clients';
-    
-        // Send the email
+    // Server settings
+    $mail->SMTPDebug = 2;                      // Enable verbose debug output
+    $mail->isSMTP();                                            // Send using SMTP
+    $mail->Host       = $smtp_server;                    // Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+    $mail->Username   = $smtp_username;                     // SMTP username
+    $mail->Password   = $smtp_password;                               // SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  //'tls';       // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+    $mail->Port       = $smtp_port;         // 587;                           // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+    // Recipients
+    $mail->setFrom($send_from_address, $send_from_name);
+    $mail->addAddress($send_to_address, $send_to_name);     // Add a recipient
+    //$mail->addAddress('ellen@example.com');               // Name is optional
+    //$mail->addReplyTo('support@webdesigndenhaag.net', 'Information');
+    //$mail->addCC('cc@example.com');
+    //$mail->addBCC('bcc@example.com');
+
+    // Content
+    $mail->isHTML(true);            // Set email format to HTML
+    $mail->Subject = $subject;      //'Here is the subject';
+    $mail->Body    = $body;         //'This is the HTML message body <b>in bold!</b>';
+    $mail->AltBody = $altbody; //'This is the body in plain text for non-HTML mail clients';
+
+    // Send the email
     if(!$mail->send()){
         echo json_encode(["status" => "error", "message" => "E-mail verzenden mislukt..."]); // $mail->ErrorInfo;
         exit();
@@ -158,79 +162,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $mail = new PHPMailer(true);
     
-        // Server settings
-        $mail->SMTPDebug = 2;                      // Enable verbose debug output
-        $mail->isSMTP();                                            // Send using SMTP
-        $mail->Host       = $smtp_server;                    // Set the SMTP server to send through
-        $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
-        $mail->Username   = $smtp_username;                     // SMTP username
-        $mail->Password   = $smtp_password;                               // SMTP password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  //'tls';       // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
-        $mail->Port       = $smtp_port;         // 587;                           // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
-        // Recipients
-        $mail->setFrom($send_from_address, $send_from_name);
-        $mail->addAddress($send_to_address, $send_to_name);     // Add a recipient
-        //$mail->addAddress('ellen@example.com');               // Name is optional
-        //$mail->addReplyTo('support@webdesigndenhaag.net', 'Information');
-        //$mail->addCC('cc@example.com');
-        //$mail->addBCC('bcc@example.com');
-    
-        // Content
-        $mail->isHTML(true);            // Set email format to HTML
-        $mail->Subject = $subject;      //'Here is the subject';
-        $mail->Body    = $body;         //'This is the HTML message body <b>in bold!</b>';
-        $mail->AltBody = $altbody; //'This is the body in plain text for non-HTML mail clients';
-    
-        // Send the email
+    // Server settings
+    $mail->SMTPDebug = 2;                      // Enable verbose debug output
+    $mail->isSMTP();                                            // Send using SMTP
+    $mail->Host       = $smtp_server;                    // Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+    $mail->Username   = $smtp_username;                     // SMTP username
+    $mail->Password   = $smtp_password;                               // SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  //'tls';       // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+    $mail->Port       = $smtp_port;         // 587;                           // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+    // Recipients
+    $mail->setFrom($send_from_address, $send_from_name);
+    $mail->addAddress($send_to_address, $send_to_name);     // Add a recipient
+    //$mail->addAddress('ellen@example.com');               // Name is optional
+    //$mail->addReplyTo('support@webdesigndenhaag.net', 'Information');
+    //$mail->addCC('cc@example.com');
+    //$mail->addBCC('bcc@example.com');
+
+    // Content
+    $mail->isHTML(true);            // Set email format to HTML
+    $mail->Subject = $subject;      //'Here is the subject';
+    $mail->Body    = $body;         //'This is the HTML message body <b>in bold!</b>';
+    $mail->AltBody = $altbody; //'This is the body in plain text for non-HTML mail clients';
+
+    // Send the email
     if(!$mail->send()){
         echo json_encode(["status" => "error", "message" => "E-mail verzenden mislukt..."]); // $mail->ErrorInfo;
     } else {
-
         echo json_encode(["status" => "success", "message" => "E-mails succesvol verzonden naar $to en $email..."]);
-        
-    }
-    
-
-} else {
-    echo json_encode(["status" => "error", "message" => "Ongeldige aanvraagmethode."]);
-}
-
-
-
-
-/* plain php mail (not save/deprecated ) 
-    if ($name && $email && $telephone && $city && $size && $info && $date && $slot) {
-
-        
-        // Email details
-        $to = "support@webdesigndenhaag.net"; // Replace with your email address
-        $subject = "Nieuwe Afspraak Aanvraag";
-        $body = "Naam: $name\nE-mail: $email\nTelefoon: $telephone\nStad: $city\nGrootte: $size\nAanvullende Info: $info\nDatum: $date\nTijdslot: " . $slot['title'] . " (" . $slot['start'] . " - " . $slot['end'] . ")";
-        $headers = "From: $to\r\nReply-To: $email";
-
-        // Send the email to the support email
-        $mail_sent = mail($to, $subject, $body, $headers);
-
-        // Send a confirmation email to the user
-        $user_subject = "Bevestiging van uw afspraak aanvraag";
-        $user_body = "Beste $name,\n\nBedankt voor uw afspraak aanvraag. Hier zijn de details van uw aanvraag:\n\n$body\n\nMet vriendelijke groet,\nWebdesign Den Haag";
-        $user_headers = "From: $to\r\nReply-To: $to";
-
-        $user_mail_sent = mail($email, $user_subject, $user_body, $user_headers);
-
-        if ($mail_sent && $user_mail_sent) {
-            // Send a JSON response
-            echo json_encode(["status" => "success", "message" => "E-mails succesvol verzonden naar $to en $email..."]);
-        } else {
-            echo json_encode(["status" => "error", "message" => "E-mail verzenden mislukt..."]);
-        }
-    } else {
-        echo json_encode(["status" => "error", "message" => "Ongeldige formuliergegevens."]);
     }
 } else {
     echo json_encode(["status" => "error", "message" => "Ongeldige aanvraagmethode."]);
 }
-
-*/
-
 ?>

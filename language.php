@@ -38,7 +38,7 @@ function loadLang($languageCode = false) {
 
     if (!$languageCode) {
 
-        $languageCode = 'en_EN';
+        $languageCode = 'nl_NL';
 
     }
 
