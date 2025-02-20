@@ -2,7 +2,7 @@
     "language-name": "Language",
     "language-selected": "English selected.",
     "date": "Date",
-    "time-slot": "Time Slot",
+    "time-slot": "Select Time Slot",
     "name": "Name",
     "email": "Email",
     "telephone": "Telephone",
@@ -34,6 +34,6 @@
     "morning": "Morning",
     "afternoon": "Afternoon",
     "email-subject": "New Booking Request",
-    "email-body": "Dear %name%,\n\nWe are excited that you hope to find your wedding dress with us, we will do our best. You will receive an email within 24 hours when a volunteer is avaible at the requested time and date. \n\nDate: %date%\nTime Slot: %time-slot%\nName: %name%\nEmail: %email%\nTelephone: %telephone%\nCity: %city%\nSize: %size%\nNumber of visitors: %visitors%\nAdditional information: %additional-info%\n\nBest regards,\nBookme - Uit-liefde",
+    "email-body": "Dear %name%,\n\nWe are excited that you hope to find your wedding dress with us, we will do our best. You will receive an email within 24 hours when a volunteer is avaible at the requested time and date.\n\nDate: %date%\nTime Slot: %time-slot%\nName: %name%\nEmail: %email%\nTelephone: %telephone%\nCity: %city%\nSize: %size%\nNumber of visitors: %visitors%\nAdditional information: %additional-info%\n\nBest regards,\nBookme - Uit-liefde",
     "email-altbody": "Dear %name%,\n\nWe are excited that you hope to find your wedding dress with us, we will do our best. You will receive an email within 24 hours when a volunteer is avaible at the requested time and date.\n\nDate: %date%\nTime Slot: %time-slot%\nName: %name%\nEmail: %email%\nTelephone: %telephone%\nCity: %city%\nSize: %size%\nNumber of visitors: %visitors%\nAdditional information: %additional-info%\n\nBest regards,\nBookme - Uit-liefde"
 }
