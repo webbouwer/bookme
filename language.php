@@ -18,7 +18,7 @@ class Language{
 
         $txt = self::$instance->trans[$key];
 
-        if (strpos($txt, "%n") != false) {
+        if (strpos($txt, "%n") !== false) {
 
             $text = str_replace("%n", "\n", $txt);
 
@@ -42,7 +42,11 @@ function loadLang($languageCode = false) {
 
     }
 
-    $langJson = json_decode(file_get_contents("languages/{$languageCode}.json"), true);
+    $filePath = __DIR__ . "/languages/{$languageCode}.json";
+    if (!file_exists($filePath)) {
+        $filePath = __DIR__ . "/languages/nl_NL.json"; // Fallback to Dutch if file not found
+    }
+    $langJson = json_decode(file_get_contents($filePath), true);
 
     new Language($langJson);
 
